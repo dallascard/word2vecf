@@ -336,9 +336,7 @@ void TrainModel() {
   cv = ReadVocab(cvocab_file);
 
   // test printing
-  int index = SearchVocab(wv, "test")
-  printf("%s %d\n", "test", index);
-
+  for (i = 0; i < 4; i++) printf("%s\n", wv->vocab[i].word);
 
   InitNet(wv, cv);
   InitUnigramTable(cv);
