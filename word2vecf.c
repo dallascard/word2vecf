@@ -337,7 +337,7 @@ void TrainModel() {
 
   // test printing
   for (a = 0; a < 4; a++) printf("%s\n", wv->vocab[a].word);
-  int temp = SearchVocab(wv->vocab, "in");
+  int temp = SearchVocab(wv, "in");
   printf("%d\n", temp);
 
   InitNet(wv, cv);
