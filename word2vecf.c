@@ -130,6 +130,13 @@ void *TrainModelThread(void *id) {
   long long end_offset = file_size / (long long)num_threads * (long long)(id+1);
   int iter;
   //printf("thread %d %lld %lld \n",id, start_offset, end_offset);
+
+  char test1[] = 'group'
+  char test2[] = 'organization'
+
+  int index1 = SearchVocab(wv, test1);
+  int index2 = SearchVocab(wv, test2);
+
   for (iter=0; iter < numiters; ++iter) {
      fseek(fi, start_offset, SEEK_SET);
      // if not binary:
@@ -204,9 +211,9 @@ void *TrainModelThread(void *id) {
            else if (f < -MAX_EXP) g = (label - 0) * alpha;
            // gradient?
            else g = (label - expTable[(int)((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2))]) * alpha;
-           // unsure
+           // add in updates to the word for this context
            for (c = 0; c < layer1_size; c++) neu1e[c] += g * syn1neg[c + l2];
-           // upate context vectors
+           // update context vectors
            for (c = 0; c < layer1_size; c++) syn1neg[c + l2] += g * syn0[c + l1];
         }
         // Learn weights input -> hidden
