@@ -125,6 +125,7 @@ void *TrainModelThread(void *id) {
   clock_t now;
   real *neu1 = (real *)calloc(layer1_size, sizeof(real));  // new vector 1
   real *neu1e = (real *)calloc(layer1_size, sizeof(real)); // new vector 1e
+  real *other = (real *)calloc(layer1_size, sizeof(real));  // vector to compare against for regluarization
   FILE *fi = fopen(train_file, "rb");          // fi = access to data file
   long long start_offset = file_size / (long long)num_threads * (long long)id;
   long long end_offset = file_size / (long long)num_threads * (long long)(id+1);
@@ -136,6 +137,8 @@ void *TrainModelThread(void *id) {
 
   int index1 = SearchVocab(wv, test1);
   int index2 = SearchVocab(wv, test2);
+
+  double strength = 0.000001;
 
   for (iter=0; iter < numiters; ++iter) {
      fseek(fi, start_offset, SEEK_SET);
@@ -216,6 +219,17 @@ void *TrainModelThread(void *id) {
            // update context vectors
            for (c = 0; c < layer1_size; c++) syn1neg[c + l2] += g * syn0[c + l1];
         }
+
+        if (wrdi == index1) {
+            int l_other = index2 * layer1_size;        // index into [vocab * layer size] array for word
+            for (c = 0; c < layer1_size; c++) neu1e[c] += strength * (syn0[l1 + c] - syn0[l_other + c]);
+        }
+
+        if (wrdi == index2) {
+            int l_other = index1 * layer1_size;        // index into [vocab * layer size] array for word
+            for (c = 0; c < layer1_size; c++) neu1e[c] += strength * (syn0[l1 + c] - syn0[l_other + c]);
+        }
+
         // Learn weights input -> hidden
         // update word vectors
         for (c = 0; c < layer1_size; c++) syn0[c + l1] += neu1e[c];
