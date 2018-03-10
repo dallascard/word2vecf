@@ -132,8 +132,8 @@ void *TrainModelThread(void *id) {
   int iter;
   //printf("thread %d %lld %lld \n",id, start_offset, end_offset);
 
-  char test1[] = 'group'
-  char test2[] = 'organization'
+  char test1[] = 'group';
+  char test2[] = 'organization';
 
   int index1 = SearchVocab(wv, test1);
   int index2 = SearchVocab(wv, test2);
